@@ -42,7 +42,7 @@ function addElement() {
     	ul.appendChild(li);
     	li.appendChild(del);
     	li.appendChild(redact);
-    	li = {"number": number, "text": textInput.value};  	
+    	li = {"number": number, "text": textInput.value, "dataIndex": number - 1};  	
     	textInput.value = "";
 
     	del.setAttribute("type", "button");
@@ -62,15 +62,19 @@ function addElement() {
 }
 
 function deleteElement() {
-	let index = this.parentElement.getElementsByClassName("number")[0].textContent - 1;
+	let num = this.parentElement.getElementsByClassName("number")[0].textContent - 1;
+	let index = elements.findIndex(function callback(element, index, elements) {
+		if (element.dataIndex == num) {
+			return true;
+		}
+		return false;
+	});
+	console.log(index);
 	elements.splice(index, 1);
 	this.parentElement.parentElement.removeChild(this.parentElement);
-	let length = elements.length;
-	for (i = index; i < length; i++) {
-		elements[i].number = elements[i].number - 1;
-	}
-	number = number - 1;
 }
+
+
 
 function editElement() {
 	var text = this.parentElement.getElementsByClassName("text")[0];
@@ -121,7 +125,13 @@ function cancelEditing() {
 }
 
 function confirmEditing() {
-	let index = this.parentElement.getElementsByClassName("number")[0].textContent - 1;
+	let num = this.parentElement.getElementsByClassName("number")[0].textContent - 1;
+	let index = elements.findIndex(function callback(element, index, elements) {
+		if (element.dataIndex == num) {
+			return true;
+		}
+		return false;
+	});
 	var li = this.parentElement;
 	var del = li.querySelector("#del");
 	var text = li.getElementsByClassName("text")[0];
@@ -136,8 +146,7 @@ function confirmEditing() {
 
 	text.textContent = input.value;
 
-	li = {"number": index + 1, "text": input.value};
-	elements[index] = li;
+	elements[index].text = input.value;
 
 	input.remove();
 	confirm.remove();
