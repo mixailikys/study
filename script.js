@@ -42,7 +42,6 @@ function addElement() {
     	ul.appendChild(li);
     	li.appendChild(del);
     	li.appendChild(redact);
-    	li.setAttribute("id", number)
     	li = {"number": number, "text": textInput.value};  	
     	textInput.value = "";
 
@@ -63,12 +62,14 @@ function addElement() {
 }
 
 function deleteElement() {
-
-	let index = this.parentElement.id - 1;
-	console.log(elements);
-	console.log(index);
+	let index = this.parentElement.getElementsByClassName("number")[0].textContent - 1;
 	elements.splice(index, 1);
 	this.parentElement.parentElement.removeChild(this.parentElement);
+	let length = elements.length;
+	for (i = index; i < length; i++) {
+		elements[i].number = elements[i].number - 1;
+	}
+	number = number - 1;
 }
 
 function editElement() {
@@ -120,6 +121,7 @@ function cancelEditing() {
 }
 
 function confirmEditing() {
+	let index = this.parentElement.getElementsByClassName("number")[0].textContent - 1;
 	var li = this.parentElement;
 	var del = li.querySelector("#del");
 	var text = li.getElementsByClassName("text")[0];
@@ -133,6 +135,9 @@ function confirmEditing() {
 	var cancel = li.getElementsByClassName("cancel")[0];
 
 	text.textContent = input.value;
+
+	li = {"number": index + 1, "text": input.value};
+	elements[index] = li;
 
 	input.remove();
 	confirm.remove();
